@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ms. Tobar Spanish Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    #game-container {
+      text-align: center;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div id="game-container">
+    <h1>Ms. Tobar Spanish Game</h1>
+    <div id="question"></div>
+    <input type="text" id="answer" placeholder="Enter your answer">
+    <button onclick="checkAnswer()">Submit</button>
+    <div id="feedback"></div>
+    <div id="score"></div>
+    <div id="unique-code"></div>
+  </div>
+
+  <script>
+    // Define your terms here in the format {english: spanish}
+    const terms = {
+      "Hello": "Hola",
+      "Goodbye": "Adiós",
+      "Thank you": "Gracias",
+      "Please": "Por favor",
+      "Yes": "Sí",
+      "No": "No",
+      "Sorry": "Lo siento",
+      "Excuse me": "Disculpe",
+      "Help": "Ayuda",
+      "Food": "Comida"
+    };
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    const keys = Object.keys(terms);
+    const uniqueCode = Math.random().toString(36).substring(2, 12);
+
+    // Shuffle the terms
+    keys.sort(() => Math.random() - 0.5);
+
+    function displayQuestion() {
+      document.getElementById("question").innerText = keys[currentQuestionIndex];
+      document.getElementById("answer").value = "";
+      document.getElementById("feedback").innerText = "";
+      document.getElementById("score").innerText = `Score: ${score}/${keys.length}`;
+    }
+
+    function checkAnswer() {
+      const answer = document.getElementById("answer").value.trim().toLowerCase();
+      const correctAnswer = terms[keys[currentQuestionIndex]].toLowerCase();
+      if (answer === correctAnswer) {
+        score++;
+        document.getElementById("feedback").innerText = "Correct!";
+      } else {
+        document.getElementById("feedback").innerText = "Wrong. The correct answer is: " + terms[keys[currentQuestionIndex]];
+      }
+      currentQuestionIndex++;
+      if (currentQuestionIndex < keys.length) {
+        displayQuestion();
+      } else {
+        endGame();
+      }
+    }
+
+    function endGame() {
+      document.getElementById("question").innerText = "Game Over";
+      document.getElementById("answer").style.display = "none";
+      document.querySelector("button").style.display = "none";
+      document.getElementById("feedback").style.display = "none";
+      document.getElementById("score").innerText = `Final Score: ${score}/${keys.length}`;
+      document.getElementById("unique-code").innerText = `Unique Code: ${uniqueCode}`;
+    }
+
+    window.onload = displayQuestion;
+
+    // Prevent form submission when pressing Enter key
+    document.getElementById("answer").addEventListener("keypress", function(event) {
+      if (event.keyCode === 13) {
+        event.preventDefault();
+        checkAnswer();
+      }
+    });
+
+    // Disable button if answer input is empty
+    document.getElementById("answer").addEventListener("input", function() {
+      const answer = document.getElementById("answer").value.trim();
+      const button = document.querySelector("button");
+      button.disabled = answer === "";
+    });
+  </script>
+</body>
+</html>
